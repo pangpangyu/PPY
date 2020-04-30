@@ -1,69 +1,69 @@
 /**
  * 注释
- * 
+ * form pangpangyu
  */
-const $ = require('jquery')
+;(function(window){
+  const $ = require('jquery')
+  class PPY{
+    constructor(){
 
-let a = 0
+    }
+    ajax(option){
+      let defaultOption = {
 
-class Person {
-  constructor(){
-    this.name = "123456789"
-    this.ajasData = null
+      }
+      $.extend(defaultOption,option || {})
+      //ajax封装
+    }
+    env(){
+      let envObj = {}
+      let osname = ''
+      let ua = window.navigator.userAgent
+      let platform = ua.toLowerCase().match(/(iphone|ipod|ipad|android)/) ? 'mobile' : 'pc'
+      if (ua.indexOf("Windows NT 10.0")!= -1){
+        osname = "Windows 10";
+      }else if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1){
+        osname = "Windows 8";
+      }else if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1){
+        osname = "Windows 7";
+      }else if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1){
+        osname = "Windows Vista";
+      }else if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1){
+        osname = "Windows XP";
+      }else if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1){
+        osname = "Windows 2000";
+      }else if (window.navigator.userAgent.indexOf("Mac") != -1){
+        osname = "Mac/iOS";
+      }else if (window.navigator.userAgent.indexOf("X11") != -1){
+        osname = "UNIX";
+      }else if (window.navigator.userAgent.indexOf("Linux") != -1){
+        osname = "Linux";
+      }
+      envObj.ua = ua
+      envObj.osname = osname
+      envObj.platform = platform
+      return envObj
+    }
   }
-
-  init(){
-    
+  class PPYS extends PPY{
+    constructor(props){
+      super(props)
+      this.init()
+    }
+    init(){
+      this.rem()
+    }
+    rem(){
+      let fontSize = '16'
+      console.log(this.env().platform)
+      console.log(window.screen.height)
+      console.log(window.screen.width)
+      document.documentElement.style.fontSize = `${fontSize}px`
+    }
   }
-
-  getName(){
-    return this.name
+  window.p = new PPYS()
+  window.$ = $
+  window.onresize = function(){
+    p.rem()
   }
-
-  setName(name){
-    this.name = name
-  }
-
-  ajax(option){
-    //setTimeout(()=>{
-      this.ajasData = 1
-      return this
-    //},3000)
-  }
-  then(next){
-    console.log(typeof next)
-    next && next(this.ajasData)
-    return this
-  }
-  
-}
-
-let p = new Person('haha')
-
-class son extends Person{
-  constructor(props){
-    super(props)
-    this.name = props.name
-  }
-
-  getName(){
-    return this.name
-  }
-  setName(name){
-    this.name = name
-  }
-}
-
-let s = new son('lll')
-
-console.log("p:"+p.getName())
-s.setName('张三')
-console.log("s:"+s.getName())
-// console.log("s:"+s.ajax().then(res => {console.log(res)}))
-
-s.ajax().then(res => {
-  console.log("res1:",res)
-  return 5
-}).then(res =>{
-  console.log("res2:",res)
-})
+})(window)

@@ -10,8 +10,9 @@ const rev = require('gulp-rev');
 const revCollector = require('gulp-rev-collector');
 const clean = require('gulp-clean')
 const browserify = require('gulp-browserify');
+const replace = require('gulp-replace')
 
-gulp.task('default',gulp.series(cleanDri,css,js,html))
+gulp.task('default',gulp.series(css,js,html))
 
 function cleanDri(){
   return gulp.src('dist')
@@ -25,6 +26,9 @@ function css(){
           .pipe(autoprefixer({
             browsers: ['last 2 versions', 'Android >= 4.0'],
             cascade: true
+          }))
+          .pipe(replace(/(\d+)px/g, function(match, p1){
+            return Number(p1) / 16 + 'rem';
           }))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
