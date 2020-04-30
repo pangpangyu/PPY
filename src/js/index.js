@@ -3,17 +3,61 @@
  * form pangpangyu
  */
 ;(function(window){
-  const $ = require('jquery')
+  // const $ = require('jquery')
+  const Promise = require("bluebird");
   class PPY{
     constructor(){
-
+      let xhr = null
+      if (window.XDomainRequest) {
+        xhr = new XDomainRequest();
+      }else{
+        xhr = new XMLHttpRequest();
+      }
+      xhr.withCredentials = false;
+      this.xhr = xhr
+    }
+    doAjax(option){
+      const that = this
+      if(!option){
+        return that
+      }else{
+        return that.ajax(option)
+      }
+      //ajax默认封装
+      /**
+       * 修改 不依赖jq
+       */
+      // let defaultOption = {}
+      // $.extend(defaultOption,option || {})
+      // //ajax封装
+      // return new Promise((resolve, reject)=>{
+      //   console.log('执行完成');
+      //   setTimeout(()=>{
+      //     resolve('随便什么数据');
+      //   },1000)
+      // })
     }
     ajax(option){
-      let defaultOption = {
-
-      }
-      $.extend(defaultOption,option || {})
-      //ajax封装
+      const that = this
+      let xhr = that.xhr
+      return new Promise((resolve, reject)=>{
+        xhr.open(option.method || 'get',option.url || '/')
+        xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
+        xhr.send()
+        xhr.onreadystatechange = function () {
+          let response = JSON.parse(xhr.responseText || "{}")
+          console.log(xhr.responseText)
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            resolve(response)
+          }
+        };
+      })
+    }
+    post(option){
+      this.ajax(option)
+    }
+    get(option){
+      this.ajax(option)
     }
     env(){
       let envObj = {}
@@ -22,21 +66,21 @@
       let platform = ua.toLowerCase().match(/(iphone|ipod|ipad|android)/) ? 'mobile' : 'pc'
       if (ua.indexOf("Windows NT 10.0")!= -1){
         osname = "Windows 10";
-      }else if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1){
+      }else if (ua.indexOf("Windows NT 6.2") != -1){
         osname = "Windows 8";
-      }else if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1){
+      }else if (ua.indexOf("Windows NT 6.1") != -1){
         osname = "Windows 7";
-      }else if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1){
+      }else if (ua.indexOf("Windows NT 6.0") != -1){
         osname = "Windows Vista";
-      }else if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1){
+      }else if (ua.indexOf("Windows NT 5.1") != -1){
         osname = "Windows XP";
-      }else if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1){
+      }else if (ua.indexOf("Windows NT 5.0") != -1){
         osname = "Windows 2000";
-      }else if (window.navigator.userAgent.indexOf("Mac") != -1){
+      }else if (ua.indexOf("Mac") != -1){
         osname = "Mac/iOS";
-      }else if (window.navigator.userAgent.indexOf("X11") != -1){
+      }else if (ua.indexOf("X11") != -1){
         osname = "UNIX";
-      }else if (window.navigator.userAgent.indexOf("Linux") != -1){
+      }else if (ua.indexOf("Linux") != -1){
         osname = "Linux";
       }
       envObj.ua = ua
@@ -55,14 +99,11 @@
     }
     rem(){
       let fontSize = '16'
-      console.log(this.env().platform)
-      console.log(window.screen.height)
-      console.log(window.screen.width)
       document.documentElement.style.fontSize = `${fontSize}px`
     }
   }
   window.p = new PPYS()
-  window.$ = $
+  // window.$ = $
   window.onresize = function(){
     p.rem()
   }

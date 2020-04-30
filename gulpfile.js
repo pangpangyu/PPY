@@ -12,13 +12,26 @@ const clean = require('gulp-clean')
 const browserify = require('gulp-browserify');
 const replace = require('gulp-replace')
 
-gulp.task('default',gulp.series(css,js,html))
+gulp.task('default',gulp.series(cleanDri,css,js,html))
+
+gulp.task('clean',gulp.series(cleanDri))
 
 function cleanDri(){
   return gulp.src('dist')
         .pipe(clean());
 }
 
+// gulp.watch('src/js/*.js',function(){
+//   js()
+// })
+
+// gulp.watch('src/css/*.scss',function(){
+//   css()
+// })
+
+// gulp.watch('src/*.html',function(){
+//   html()
+// })
 function css(){
   return gulp.src('src/css/*.scss')
           .pipe(sass())
@@ -41,7 +54,7 @@ function js(){
   return gulp.src('src/js/*.js')
           .pipe(browserify())
           .pipe(babel())
-          .pipe(uglify({mangle:true,compress:false}))
+          // .pipe(uglify({mangle:true,compress:false}))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
           .pipe(gulp.dest('dist/js'))
