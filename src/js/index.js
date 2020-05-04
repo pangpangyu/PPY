@@ -69,6 +69,9 @@
       option.type = type
       return option
     }
+    /**
+     * 网络请求兼容至ie9 r如果考虑更低版本ie兼容  考虑原生ajax
+     */
     doAjaxGet() {
       let data = Array.from(arguments)
       let option = this.HandleOption(data, 'get')
