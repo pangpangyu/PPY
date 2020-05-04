@@ -9,17 +9,25 @@
 <body>
   <!------这个是注释-------->
   <div id="text">123456</div>
+  <div id="text2">123456</div>
+  <div id="text3">123456</div>
   <script src="js/index.min.js"></script>
   <script>
     /**
      * 这个是注释
     */
-   var option = {
-     url: 'https://v1.hitokoto.cn',
-     method:'get'
-   }
-    p.doAjax(option).then(function(res){
-      document.getElementById('text').innerHTML = JSON.stringify(res)
+    var option = {
+      url: 'https://v1.hitokoto.cn',
+      method:'get'
+    }
+    PPYUI.ajaxRequest(option).then(function(res){
+      $('#text').html(res.hitokoto)
+    })
+    PPYUI.ajaxRequest(option).then(function(res){
+      $('#text2').html(res.hitokoto)
+    })
+    PPYUI.doAjaxGet('https://v1.hitokoto.cn').then(function(res){
+      $('#text3').html(res.hitokoto)
     })
   </script>
 </body>

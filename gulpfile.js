@@ -54,7 +54,7 @@ function js(){
   return gulp.src('src/js/*.js')
           .pipe(browserify())
           .pipe(babel())
-          // .pipe(uglify({mangle:true,compress:false}))
+          .pipe(uglify({mangle:{toplevel:true}}))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
           .pipe(gulp.dest('dist/js'))

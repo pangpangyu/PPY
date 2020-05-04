@@ -1,110 +1,253 @@
 /**
- * 注释
  * form pangpangyu
  */
-;(function(window){
-  // const $ = require('jquery')
+; (function (window) {
+  const $ = require('jquery')
   const Promise = require("bluebird");
-  class PPY{
-    constructor(){
-      let xhr = null
-      if (window.XDomainRequest) {
-        xhr = new XDomainRequest();
-      }else{
-        xhr = new XMLHttpRequest();
+  /**
+   * Object.assign 兼容
+   */
+  if (typeof Object.assign != 'function') {
+    Object.assign = function (target) {
+      'use strict';
+      if (target == null) {
+        throw new TypeError('Cannot convert undefined or null to object');
       }
-      xhr.withCredentials = false;
-      this.xhr = xhr
-    }
-    doAjax(option){
-      const that = this
-      if(!option){
-        return that
-      }else{
-        return that.ajax(option)
-      }
-      //ajax默认封装
-      /**
-       * 修改 不依赖jq
-       */
-      // let defaultOption = {}
-      // $.extend(defaultOption,option || {})
-      // //ajax封装
-      // return new Promise((resolve, reject)=>{
-      //   console.log('执行完成');
-      //   setTimeout(()=>{
-      //     resolve('随便什么数据');
-      //   },1000)
-      // })
-    }
-    ajax(option){
-      const that = this
-      let xhr = that.xhr
-      return new Promise((resolve, reject)=>{
-        xhr.open(option.method || 'get',option.url || '/')
-        xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-        xhr.send()
-        xhr.onreadystatechange = function () {
-          let response = JSON.parse(xhr.responseText || "{}")
-          console.log(xhr.responseText)
-          if (xhr.readyState == 4 && xhr.status == 200) {
-            resolve(response)
+
+      target = Object(target);
+      for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
+        if (source != null) {
+          for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+              target[key] = source[key];
+            }
           }
-        };
+        }
+      }
+      return target;
+    };
+  }
+  /**
+   * Array.from兼容
+   */
+  if (!Array.from) {
+    Array.from = function (el) {
+      return Array.apply(this, el);
+    }
+  }
+  /**
+   * _default 
+   */
+  let _default = {
+    url: location.href,
+    type: 'get',
+    data: {},
+    contentType: 'application/x-www-form-urlencoded',
+    timeout: 60000,
+    headers: {},
+    async: false,
+    loading: false
+  }
+  class PPY {
+    constructor() { }
+    HandleOption(arr, type) {
+      let option = {}
+      if (arr.length == 1) {
+        if (typeof arr[0] === 'object') {
+          option = arr[0]
+        } else if (typeof arr[0] === 'string') {
+          option.url = arr[0]
+        }
+      } else {
+        option.url = arr[0] || '/'
+        option.data = arr[1] || {}
+        option.headers = arr[2] || {}
+        option.async = arr[3] || false
+        option.loading = arr[4] || false
+      }
+      option.type = type
+      return option
+    }
+    doAjaxGet() {
+      let data = Array.from(arguments)
+      let option = this.HandleOption(data, 'get')
+      return this.ajaxRequest(option)
+    }
+    doAjaxPost() {
+      let data = Array.from(arguments)
+      let option = this.HandleOption(data, 'post')
+      return this.ajaxRequest(option)
+    }
+    ajaxRequest(option) {
+      option = option || {}
+      if (typeof option === "object") {
+        Object.assign(_default, option)
+      } else {
+        _default.url = option
+      }
+      return new Promise((resolve, reject) => {
+        if (_default.loading) {
+
+        }
+        $.support.cors = true; 
+        $.ajax({
+          url: _default.url,
+          type: _default.type,
+          data: _default.data,
+          contentType: _default.contentType,
+          async: _default.async,
+          headers: _default.headers,
+          xhrFields: {
+            withCredentials: false
+          },
+          crossDomain: true,
+          success: function (res) {
+            if (_default.loading) {
+
+            }
+            resolve(res)
+          },
+          error: function (err) {
+            reject(err)
+          }
+        })
       })
     }
-    post(option){
-      this.ajax(option)
+    test() {
+      console.log(arguments)
+      console.log(Array.from(arguments))
     }
-    get(option){
-      this.ajax(option)
+    /**
+     * loading
+     */
+    loading() {
+
     }
-    env(){
+    loadingHide() {
+
+    }
+    /**
+     * 当前环境参数
+     */
+    env() {
       let envObj = {}
       let osname = ''
+      let browser = ''
       let ua = window.navigator.userAgent
       let platform = ua.toLowerCase().match(/(iphone|ipod|ipad|android)/) ? 'mobile' : 'pc'
-      if (ua.indexOf("Windows NT 10.0")!= -1){
+      if (ua.indexOf("Windows NT 10.0") != -1) {
         osname = "Windows 10";
-      }else if (ua.indexOf("Windows NT 6.2") != -1){
+      } else if (ua.indexOf("Windows NT 6.2") != -1) {
         osname = "Windows 8";
-      }else if (ua.indexOf("Windows NT 6.1") != -1){
+      } else if (ua.indexOf("Windows NT 6.1") != -1) {
         osname = "Windows 7";
-      }else if (ua.indexOf("Windows NT 6.0") != -1){
+      } else if (ua.indexOf("Windows NT 6.0") != -1) {
         osname = "Windows Vista";
-      }else if (ua.indexOf("Windows NT 5.1") != -1){
+      } else if (ua.indexOf("Windows NT 5.1") != -1) {
         osname = "Windows XP";
-      }else if (ua.indexOf("Windows NT 5.0") != -1){
+      } else if (ua.indexOf("Windows NT 5.0") != -1) {
         osname = "Windows 2000";
-      }else if (ua.indexOf("Mac") != -1){
+      } else if (ua.indexOf("Mac") != -1) {
         osname = "Mac/iOS";
-      }else if (ua.indexOf("X11") != -1){
+      } else if (ua.indexOf("X11") != -1) {
         osname = "UNIX";
-      }else if (ua.indexOf("Linux") != -1){
+      } else if (ua.indexOf("Linux") != -1) {
         osname = "Linux";
+      }
+      if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) {
+        browser = 'Opera';
+      }
+      else if (ua.indexOf("compatible") > -1 && ua.indexOf("MSIE") > -1) {
+        browser = 'IE';
+      }
+      else if (ua.indexOf("Edge") > -1) {
+        browser = 'Edge';
+      }
+      else if (ua.indexOf("Firefox") > -1) {
+        browser = 'Firefox';
+      }
+      else if (ua.indexOf("Safari") > -1 && ua.indexOf("Chrome") == -1) {
+        browser = 'Safari';
+      }
+      else if (ua.indexOf("Chrome") > -1 && ua.indexOf("Safari") > -1) {
+        browser = 'Chrome';
+      }
+      else if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        browser = 'IE>=11';
       }
       envObj.ua = ua
       envObj.osname = osname
       envObj.platform = platform
+      envObj.browser = browser
       return envObj
     }
+    /**
+     * 获取当前时间
+     * 一般时间为yyyy-MM-dd HH:mm:ss
+     * 火狐及mac系统时间为 yyyy/MM/dd HH:mm:ss
+     */
+    getDate() {
+      let now = new Date()
+      let yyyy = now.getFullYear()
+      let MM = now.getMonth() + 1
+      let dd = now.getDate()
+      let HH = now.getHours()
+      let mm = now.getMinutes()
+      let ss = now.getSeconds()
+      let time = null
+      if (this.env.osname == "Mac/iOS") {
+        time = yyyy + '/' + (MM < 10 ? ('0' + MM) : MM) + '/' + (dd < 10 ? ('0' + dd) : dd) + ' ' + (HH < 10 ? ('0' + HH) : HH) + ':' + (mm < 10 ? ('0' + mm) : mm) + ':' + (ss < 10 ? ('0' + ss) : ss)
+      } else {
+        if (this.env.browser == "Firefox") {
+          time = yyyy + '/' + (MM < 10 ? ('0' + MM) : MM) + '/' + (dd < 10 ? ('0' + dd) : dd) + ' ' + (HH < 10 ? ('0' + HH) : HH) + ':' + (mm < 10 ? ('0' + mm) : mm) + ':' + (ss < 10 ? ('0' + ss) : ss)
+        } else {
+          time = yyyy + '-' + (MM < 10 ? ('0' + MM) : MM) + '-' + (dd < 10 ? ('0' + dd) : dd) + ' ' + (HH < 10 ? ('0' + HH) : HH) + ':' + (mm < 10 ? ('0' + mm) : mm) + ':' + (ss < 10 ? ('0' + ss) : ss)
+        }
+      }
+      return time
+    }
+    /**
+     * 获取url参数
+     */
+    getQueryStr(name) {
+      let value = ''
+      let query = window.location.search.substring(1)
+      let vars = query.split("&")
+      for (let i = 0; i < vars.length; i++) {
+        let pair = vars[i].split("=");
+        if (pair[0] == name) {
+          value = pair[1]
+        }
+      }
+      return value
+    }
   }
-  class PPYS extends PPY{
-    constructor(props){
+  class PPYS extends PPY {
+    constructor(props) {
       super(props)
       this.init()
     }
-    init(){
+    init() {
       this.rem()
     }
-    rem(){
-      let fontSize = '16'
+    rem() {
+      let fontSize = '16';//默认字体大小
+
+      let designWidth = 1920; //设计稿宽度
+      var minCompWidth = 1280; //兼容的最小屏幕宽度
+      var minFontSize = ((designWidth / minCompWidth) * 10) + 1;  //前半部分是计算字体大小的公式，某尾的+1是由自己根据实际情况微调
+      var pageRemWidth = minCompWidth / minFontSize;
+      var clientWidth = document.documentElement.clientWidth;
+      if (clientWidth <= minCompWidth) {
+        fontSize = minFontSize;
+      } else {
+        fontSize = clientWidth / pageRemWidth
+      }
       document.documentElement.style.fontSize = `${fontSize}px`
     }
   }
-  window.p = new PPYS()
-  // window.$ = $
-  window.onresize = function(){
-    p.rem()
-  }
+  window.PPYUI = new PPYS()
+  window.$ = $
+  window.onresize = function () { PPYUI.rem() }
 })(window)
