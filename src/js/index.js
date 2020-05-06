@@ -50,7 +50,9 @@
     loading: false
   }
   class PPY {
-    constructor() { }
+    constructor() {
+      this.load = 0
+    }
     HandleOption(arr, type) {
       let option = {}
       if (arr.length == 1) {
@@ -83,6 +85,7 @@
       return this.ajaxRequest(option)
     }
     ajaxRequest(option) {
+      const that = this
       option = option || {}
       if (typeof option === "object") {
         Object.assign(_default, option)
@@ -91,7 +94,7 @@
       }
       return new Promise((resolve, reject) => {
         if (_default.loading) {
-
+          that.loading()
         }
         $.support.cors = true; 
         $.ajax({
@@ -107,7 +110,7 @@
           crossDomain: true,
           success: function (res) {
             if (_default.loading) {
-
+              that.loadingHide()
             }
             resolve(res)
           },
@@ -125,10 +128,11 @@
      * loading
      */
     loading() {
-
+      this.load ++
     }
     loadingHide() {
-
+      this.load --
+      if(this.load <= 0){}
     }
     /**
      * 当前环境参数
