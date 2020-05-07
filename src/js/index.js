@@ -49,10 +49,10 @@
     async: false,
     loading: false
   }
+  let messageIndex = 1
+  console.log("messageIndex:",messageIndex)
   class PPY {
-    constructor() {
-      this.load = 0
-    }
+    constructor() {}
     HandleOption(arr, type) {
       let option = {}
       if (arr.length == 1) {
@@ -110,7 +110,7 @@
           crossDomain: true,
           success: function (res) {
             if (_default.loading) {
-              that.loadingHide()
+              that.messageClose()
             }
             resolve(res)
           },
@@ -120,19 +120,24 @@
         })
       })
     }
-    test() {
-      console.log(arguments)
-      console.log(Array.from(arguments))
-    }
     /**
      * loading
      */
     loading() {
-      this.load ++
+      console.log(messageIndex)
+      if(messageIndex == 1){
+        this.message('loading','加载中...',100)
+        messageIndex ++ 
+      }
+      
     }
-    loadingHide() {
-      this.load --
-      if(this.load <= 0){}
+    messageClose() {
+      messageIndex = 1
+      $("#ppy-modal-message").animate({
+        "opacity": "0"
+      },200,"linear",function(){
+        $("#ppy-modal-message").remove()
+      })
     }
     /**
      * 当前环境参数
@@ -189,6 +194,20 @@
       envObj.browser = browser
       return envObj
     }
+    message(type,context,time,fun){
+      time = time || 3000
+      var node = document.createElement('div'),nodeson = document.createElement('div')
+      node.id = "ppy-modal-message"
+      nodeson.className = "ppy-modal-message-body"
+      nodeson.textContent = context || '提示信息'
+      node.appendChild(nodeson)
+      document.body.appendChild(node)
+      if(time != 0){
+        setTimeout(()=>{
+          this.messageClose()
+        },time)
+      }
+    }
     /**
      * 获取当前时间
      * 一般时间为yyyy-MM-dd HH:mm:ss
@@ -239,7 +258,7 @@
       this.rem()
     }
     rem() {
-      let fontSize = '16';//默认字体大小
+      let fontSize = '14';//默认字体大小
 
       let designWidth = 1920; //设计稿宽度
       var minCompWidth = 1280; //兼容的最小屏幕宽度

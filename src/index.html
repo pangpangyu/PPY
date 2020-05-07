@@ -11,6 +11,8 @@
   <div id="text">123456</div>
   <div id="text2">123456</div>
   <div id="text3">123456</div>
+  <button class="test">loading</button>
+  <button class="c">clear</button>
   <script src="js/index.min.js"></script>
   <script>
     /**
@@ -18,7 +20,8 @@
     */
     var option = {
       url: 'https://v1.hitokoto.cn',
-      method:'get'
+      method:'get',
+      loading: true
     }
     PPYUI.ajaxRequest(option).then(function(res){
       $('#text').html(res.hitokoto)
@@ -28,6 +31,12 @@
     })
     PPYUI.doAjaxGet('https://v1.hitokoto.cn').then(function(res){
       $('#text3').html(res.hitokoto)
+    })
+    $('.test').click(function(){
+      PPYUI.loading()
+    })
+    $('.c').click(function(){
+      PPYUI.loadingClose()
     })
   </script>
 </body>

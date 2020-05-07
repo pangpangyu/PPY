@@ -1,12 +1,77 @@
-body{
-  padding: 0;
-  margin: 0;
-  /**
-  * 注释
-  */
-  div{
-    line-height: 1.5;
-    display: flex;
-    font-size: 16px;
+html,body,div,span,applet,object,,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+	margin:0;
+	padding:0;
+	border:0;
+	font-size:100%;
+	font:inherit;
+	font-weight:normal;
+	vertical-align:baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+	display:block;
+}
+ol,ul,li {
+	list-style:none;
+}
+blockquote,q {
+	quotes:none;
+}
+blockquote:before,blockquote:after,q:before,q:after {
+	content:'';
+	content:none;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+th,td {
+	vertical-align:middle;
+}
+/* custom */
+a {
+	outline:none;
+	color:#16418a;
+	text-decoration:none;
+	-webkit-backface-visibility:hidden;
+}
+a:focus {
+	outline:none;
+}
+input:focus,select:focus,textarea:focus {
+	outline:-webkit-focus-ring-color auto 0;
+}
+/**
+ * loading
+ */
+#ppy-modal-message{
+  position: fixed;
+  left: 0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  .ppy-modal-message-body{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    background: #000;
+    background-color: rgba(0,0,0,.6);
+    padding: 10px 20px;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 14px;
+    transform-origin: left top;
+    transform: scale(1) translateY(-50%) translateX(-50%);
+    opacity: 1;
+    z-index: 10001;
+    max-width: 80%;
+    animation: messageShow 200ms ease-out 0s 1 normal;
   }
 }
+@keyframes messageShow{
+  0%{transform: scale(0.8) translateY(-50%) translateX(-50%);opacity: 0;}
+  100%{transform: scale(1) translateY(-50%) translateX(-50%);opacity: 1;}
+}
+
