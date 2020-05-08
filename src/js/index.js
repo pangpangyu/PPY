@@ -124,15 +124,9 @@
      * loading
      */
     loading() {
-      console.log(messageIndex)
-      if(messageIndex == 1){
-        this.message('loading','加载中...',100)
-        messageIndex ++ 
-      }
-      
+      this.message('loading','加载中...')
     }
     messageClose() {
-      messageIndex = 1
       $("#ppy-modal-message").animate({
         "opacity": "0"
       },200,"linear",function(){
@@ -202,6 +196,7 @@
       nodeson.textContent = context || '提示信息'
       node.appendChild(nodeson)
       document.body.appendChild(node)
+      console.log(time)
       if(time != 0){
         setTimeout(()=>{
           this.messageClose()
