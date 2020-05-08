@@ -49,8 +49,7 @@
     async: false,
     loading: false
   }
-  let messageIndex = 1
-  console.log("messageIndex:",messageIndex)
+  let loadIndex = 1
   class PPY {
     constructor() {}
     HandleOption(arr, type) {
@@ -109,13 +108,16 @@
           },
           crossDomain: true,
           success: function (res) {
-            if (_default.loading) {
-              that.messageClose()
-            }
             resolve(res)
           },
           error: function (err) {
             reject(err)
+          },
+          complete:function(){
+            console.log(_default.loading)
+            if (_default.loading) {
+              that.loadremove()
+            }
           }
         })
       })
@@ -124,14 +126,23 @@
      * loading
      */
     loading() {
-      this.message('loading','加载中...')
+      if(loadIndex == 1){
+        this.message('加载中...')
+      }
+      loadIndex ++
     }
-    messageClose() {
-      $("#ppy-modal-message").animate({
-        "opacity": "0"
-      },200,"linear",function(){
-        $("#ppy-modal-message").remove()
-      })
+    loadremove(){
+      loadIndex--
+      if(loadIndex == 1){
+        $('.ppy-modal-message').remove()
+      }
+    }
+    message(context){
+      var msg = `<div id="ppy-modal-message"><div class="ppy-modal-message-body">${context || '提示信息'}</div></div>`
+      $('body').append(msg)
+      setTimeout(()=>{
+        $('.ppy-modal-message').remove()
+      },3000)
     }
     /**
      * 当前环境参数
@@ -187,21 +198,6 @@
       envObj.platform = platform
       envObj.browser = browser
       return envObj
-    }
-    message(type,context,time,fun){
-      time = time || 3000
-      var node = document.createElement('div'),nodeson = document.createElement('div')
-      node.id = "ppy-modal-message"
-      nodeson.className = "ppy-modal-message-body"
-      nodeson.textContent = context || '提示信息'
-      node.appendChild(nodeson)
-      document.body.appendChild(node)
-      console.log(time)
-      if(time != 0){
-        setTimeout(()=>{
-          this.messageClose()
-        },time)
-      }
     }
     /**
      * 获取当前时间
