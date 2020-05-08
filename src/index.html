@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    function init(){
+      var fontSize = '14';
+      var designWidth = 1200;
+      var minCompWidth = 980;
+      var minFontSize = ((designWidth / minCompWidth) * 10) - 4;
+      var pageRemWidth = minCompWidth / minFontSize;
+      var clientWidth = document.documentElement.clientWidth;
+      if (clientWidth <= minCompWidth) {
+        fontSize = minFontSize;
+      } else {
+        fontSize = clientWidth / pageRemWidth
+      }
+      fontSize = fontSize < 14 ? 14 : fontSize
+      document.documentElement.style.fontSize = fontSize + 'px'
+    }
+    init()
+    window.onresize = function () { init() }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
@@ -20,8 +39,7 @@
     */
     var option = {
       url: 'https://v1.hitokoto.cn',
-      method:'get',
-      loading: true
+      method:'get'
     }
     PPYUI.ajaxRequest(option).then(function(res){
       $('#text').html(res.hitokoto)
@@ -31,12 +49,6 @@
     })
     PPYUI.doAjaxGet('https://v1.hitokoto.cn').then(function(res){
       $('#text3').html(res.hitokoto)
-    })
-    $('.test').click(function(){
-      PPYUI.loading()
-    })
-    $('.c').click(function(){
-      PPYUI.loadingClose()
     })
   </script>
 </body>

@@ -46,8 +46,7 @@
     contentType: 'application/x-www-form-urlencoded',
     timeout: 60000,
     headers: {},
-    async: false,
-    loading: false
+    async: false
   }
   let loadIndex = 1
   class PPY {
@@ -84,7 +83,6 @@
       return this.ajaxRequest(option)
     }
     ajaxRequest(option) {
-      const that = this
       option = option || {}
       if (typeof option === "object") {
         Object.assign(_default, option)
@@ -92,9 +90,6 @@
         _default.url = option
       }
       return new Promise((resolve, reject) => {
-        if (_default.loading) {
-          that.loading()
-        }
         $.support.cors = true; 
         $.ajax({
           url: _default.url,
@@ -113,12 +108,6 @@
           error: function (err) {
             reject(err)
           },
-          complete:function(){
-            console.log(_default.loading)
-            if (_default.loading) {
-              that.loadremove()
-            }
-          }
         })
       })
     }
@@ -246,7 +235,7 @@
       this.init()
     }
     init() {
-      this.rem()
+      // this.rem()
     }
     rem() {
       let fontSize = '14';//默认字体大小
@@ -266,5 +255,5 @@
   }
   window.PPYUI = new PPYS()
   window.$ = $
-  window.onresize = function () { PPYUI.rem() }
+  // window.onresize = function () { PPYUI.rem() }
 })(window)
