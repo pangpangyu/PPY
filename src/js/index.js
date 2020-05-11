@@ -1,4 +1,4 @@
-/**
+/*!
  * form pangpangyu
  */
 ; (function (window) {
@@ -110,28 +110,6 @@
           },
         })
       })
-    }
-    /**
-     * loading
-     */
-    loading() {
-      if(loadIndex == 1){
-        this.message('加载中...')
-      }
-      loadIndex ++
-    }
-    loadremove(){
-      loadIndex--
-      if(loadIndex == 1){
-        $('.ppy-modal-message').remove()
-      }
-    }
-    message(context){
-      var msg = `<div id="ppy-modal-message"><div class="ppy-modal-message-body">${context || '提示信息'}</div></div>`
-      $('body').append(msg)
-      setTimeout(()=>{
-        $('.ppy-modal-message').remove()
-      },3000)
     }
     /**
      * 当前环境参数

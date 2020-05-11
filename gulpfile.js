@@ -7,10 +7,21 @@ const autoprefixer = require('gulp-autoprefixer')
 const babel = require("gulp-babel");
 const htmlmin = require('gulp-htmlmin')
 const rev = require('gulp-rev');
-const revCollector = require('gulp-rev-collector');
+const revCollector = require('gulp-rev-collector')
 const clean = require('gulp-clean')
-const browserify = require('gulp-browserify');
+const browserify = require('gulp-browserify')
 const replace = require('gulp-replace')
+const header = require('gulp-header')
+
+const pkg = require('./package.json')
+
+var banner = ['/**',
+  ' * <%= pkg.name %> - <%= pkg.description %>',
+  ' * @version v<%= pkg.version %>',
+  ' * @link <%= pkg.homepage %>',
+  ' * @license <%= pkg.license %>',
+  ' */',
+  ''].join('\n');
 
 gulp.task('default',gulp.series(cleanDri,css,js,html))
 
@@ -45,6 +56,7 @@ function css(){
           }))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
+          .pipe(header(banner, { pkg: pkg }))
           .pipe(gulp.dest('dist/css'))
           .pipe(rev.manifest())
           .pipe(gulp.dest('dist/css'));
@@ -57,6 +69,7 @@ function js(){
           .pipe(uglify({mangle:{toplevel:true}}))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
+          .pipe(header(banner, { pkg: pkg }))
           .pipe(gulp.dest('dist/js'))
           .pipe(rev.manifest())
           .pipe(gulp.dest('dist/js'));
