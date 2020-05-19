@@ -37,19 +37,25 @@
     /**
      * 这个是注释
     */
-    var option = {
-      url: 'https://v1.hitokoto.cn',
-      method:'get'
-    }
-    PPYUI.ajaxRequest(option).then(function(res){
-      $('#text').html(res.hitokoto)
+    PPYUI.doAjaxGet('https://v1.hitokoto.cn',{},{},function(res){
+      console.log(res)
     })
-    PPYUI.ajaxRequest(option).then(function(res){
-      $('#text2').html(res.hitokoto)
+    PPYUI.doAjaxGet('https://v1.hitokoto.cn',{},{},function(res){
+      console.log("res2",res)
     })
-    PPYUI.doAjaxGet('https://v1.hitokoto.cn').then(function(res){
-      $('#text3').html(res.hitokoto)
-    })
+    // var option = {
+    //   url: 'https://v1.hitokoto.cn',
+    //   method:'get'
+    // }
+    // PPYUI.ajaxRequest(option).then(function(res){
+    //   $('#text').html(res.hitokoto)
+    // })
+    // PPYUI.ajaxRequest(option).then(function(res){
+    //   $('#text2').html(res.hitokoto)
+    // })
+    // PPYUI.doAjaxGet('https://v1.hitokoto.cn').then(function(res){
+    //   $('#text3').html(res.hitokoto)
+    // })
   </script>
 </body>
 </html>

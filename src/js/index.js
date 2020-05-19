@@ -2,8 +2,8 @@
  * form pangpangyu
  */
 ; (function (window) {
-  const $ = require('jquery')
-  const Promise = require("bluebird");
+  // const $ = require('jquery')
+  // const Promise = require("bluebird");
   /**
    * Object.assign 兼容
    */
@@ -39,77 +39,66 @@
   /**
    * _default 
    */
-  let _default = {
-    url: location.href,
-    type: 'get',
-    data: {},
-    contentType: 'application/x-www-form-urlencoded',
-    timeout: 60000,
-    headers: {},
-    async: false
-  }
-  let loadIndex = 1
-  class PPY {
-    constructor() {}
-    HandleOption(arr, type) {
-      let option = {}
-      if (arr.length == 1) {
-        if (typeof arr[0] === 'object') {
-          option = arr[0]
-        } else if (typeof arr[0] === 'string') {
-          option.url = arr[0]
+  // let _default = {
+  //   url: location.href,
+  //   type: 'get',
+  //   data: {},
+  //   contentType: 'application/x-www-form-urlencoded',
+  //   timeout: 60000,
+  //   headers: {},
+  //   async: false
+  // }
+  class ajax{
+    constructor(){
+      let xhr = null
+      if (typeof XMLHttpRequest !== 'undefined') {
+        xhr = new XMLHttpRequest();
+      } else if (typeof ActiveXObject !== 'undefined'){
+        // 支持IE7之前的版本
+        if (typeof arguments.callee.activeXString !== 'string') {
+          var versions = ['MSXML2.XMLHttp.6.0', 'MSXML2.XMLHttp.3.0', 'MSXML2.XMLHttp'];
+          for (var i = 0; i < versions.length; i++) {
+            try {
+              xhr = new ActiveXObject(versions[i]);
+              arguments.callee.activeXString = versions[i];
+              break;
+            } catch (e) {console.log('xhr',e)}
+          }
         }
+        xhr = new ActiveXObject(arguments.callee.activeXString);
       } else {
-        option.url = arr[0] || '/'
-        option.data = arr[1] || {}
-        option.headers = arr[2] || {}
-        option.async = arr[3] || false
-        option.loading = arr[4] || false
+        throw new Error("No XHR Object available!");
       }
-      option.type = type
-      return option
+      return xhr
     }
-    /**
-     * 网络请求兼容至ie9 如果考虑更低版本ie兼容  考虑原生ajax
-     */
-    doAjaxGet() {
-      let data = Array.from(arguments)
-      let option = this.HandleOption(data, 'get')
-      return this.ajaxRequest(option)
+  }
+  class PPY {
+    constructor() {
+      
     }
-    doAjaxPost() {
-      let data = Array.from(arguments)
-      let option = this.HandleOption(data, 'post')
-      return this.ajaxRequest(option)
+    doAjaxGet(url,data,header,callback) {
+      return this.ajaxRequest(url,"get",data,header,callback)
     }
-    ajaxRequest(option) {
-      option = option || {}
-      if (typeof option === "object") {
-        Object.assign(_default, option)
-      } else {
-        _default.url = option
+    doAjaxPost(url,data,header,callback) {
+      return this.ajaxRequest(url,"post",data,header,callback)
+    }
+    ajaxRequest(url,type,data,header,callback) {
+      //固定格式为 url data header callback
+      let _default = {
+        async: true,
       }
-      return new Promise((resolve, reject) => {
-        $.support.cors = true; 
-        $.ajax({
-          url: _default.url,
-          type: _default.type,
-          data: _default.data,
-          contentType: _default.contentType,
-          async: _default.async,
-          headers: _default.headers,
-          xhrFields: {
-            withCredentials: false
-          },
-          crossDomain: true,
-          success: function (res) {
-            resolve(res)
-          },
-          error: function (err) {
-            reject(err)
-          },
-        })
-      })
+      url = url || '/'
+      type = type || 'get'
+      Object.assign(_default,header)
+      let xhr = new ajax()
+      xhr.open(type, url , _default.async);
+      xhr.send()
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+          let data = JSON.parse(xhr.responseText)
+          callback && callback(data)
+        }
+      }
     }
     /**
      * 当前环境参数
@@ -232,6 +221,6 @@
     }
   }
   window.PPYUI = new PPYS()
-  window.$ = $
+  // window.$ = $
   // window.onresize = function () { PPYUI.rem() }
 })(window)

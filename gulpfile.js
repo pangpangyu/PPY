@@ -66,7 +66,7 @@ function js(){
   return gulp.src('src/js/*.js')
           .pipe(browserify())
           .pipe(babel())
-          .pipe(uglify({mangle:{toplevel:true}}))
+          // .pipe(uglify({mangle:{toplevel:true}}))
           .pipe(rename({suffix:'.min'}))
           .pipe(rev())
           .pipe(header(banner, { pkg: pkg }))
