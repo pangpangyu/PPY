@@ -14,7 +14,9 @@ const replace = require('gulp-replace')
 const header = require('gulp-header')
 
 const pkg = require('./package.json')
-
+/**
+ * 
+ */
 var banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
   ' * @version v<%= pkg.version %>',
